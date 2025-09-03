@@ -1,5 +1,5 @@
 
-from datetime import time
+import time
 import argparse
 
 def detect_and_highlight(input_video_path, output_video_path):
