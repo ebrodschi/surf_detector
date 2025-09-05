@@ -1,3 +1,21 @@
+import os, sys, subprocess
+
+def ensure_pkgs():
+    try:
+        import moviepy  # noqa
+    except ModuleNotFoundError:
+        subprocess.check_call([
+            sys.executable, "-m", "pip", "install",
+            "moviepy>=1.0.3", "imageio-ffmpeg>=0.4.9"
+        ])
+
+ensure_pkgs()
+
+# Ensure ffmpeg binary is available to MoviePy
+from imageio_ffmpeg import get_ffmpeg_exe
+os.environ["IMAGEIO_FFMPEG_EXE"] = get_ffmpeg_exe()
+
+
 import streamlit as st
 import time
 import os
