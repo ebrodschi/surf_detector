@@ -19,8 +19,10 @@ ensure_pkgs()
 from imageio_ffmpeg import get_ffmpeg_exe
 os.environ["IMAGEIO_FFMPEG_EXE"] = get_ffmpeg_exe()
 
-
-from moviepy.editor import VideoFileClip
+try:
+    from moviepy.editor import VideoFileClip
+except:
+    from moviepy import VideoFileClip
 
 def transcode_to_h264_web(mp4_in: str, mp4_out: str, fps: int = None):
     """
