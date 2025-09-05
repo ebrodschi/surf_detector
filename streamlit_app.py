@@ -28,7 +28,7 @@ st.header(texts["upload_header"][lang])
 uploaded_file = st.file_uploader(texts["upload_prompt"][lang], type=["mp4", "mov", "avi"])
 
 temp_video_path = "temp_video.mp4"
-timestamp = time.strftime("%Y-%m-%d", time.gmtime())
+timestamp = time.strftime("%Y-%m-%d_%H-%M-%S", time.gmtime())
 output_video_path = f"output_video_{timestamp}.mp4"
 
 if uploaded_file is not None:
