@@ -1,6 +1,5 @@
 import streamlit as st
-import cv2
-import numpy as np
+import time
 import os
 from detection_and_highlight_generation import detect_and_highlight 
 from texts import texts
@@ -19,7 +18,7 @@ st.header(texts["training_header"][lang])
 st.write(texts["training_desc"][lang])
 
 st.header(texts["demo_header"][lang])
-demo_video_path = "surf_detector_demo.mp4"
+demo_video_path = "surf_detector_demo.mp4" #surf_detector_demo
 if os.path.exists(demo_video_path):
     st.video(demo_video_path)
 else:
@@ -29,7 +28,8 @@ st.header(texts["upload_header"][lang])
 uploaded_file = st.file_uploader(texts["upload_prompt"][lang], type=["mp4", "mov", "avi"])
 
 temp_video_path = "temp_video.mp4"
-output_video_path = "output_video.mp4"
+timestamp = time.strftime("%Y-%m-%d", time.gmtime())
+output_video_path = f"output_video_{timestamp}.mp4"
 
 if uploaded_file is not None:
     # Save the uploaded video to a temporary file
@@ -42,19 +42,25 @@ if uploaded_file is not None:
     
     import time
     time.sleep(5)  # Small delay to ensure file is ready
+    
 
-    # Display the output video
-    if os.path.exists(output_video_path):
-        st.video(output_video_path)
-        # Add button to delete temp files
-        if st.button("Borrar archivos temporales / Delete temporary files"):
-            if os.path.exists(temp_video_path):
-                os.remove(temp_video_path)
-            if os.path.exists(output_video_path):
-                os.remove(output_video_path)
-                st.success("Archivos temporales borrados / Temporary files deleted.")
-            else:
-                st.warning("No se encontraron archivos temporales para borrar.")
-    else:
+
+# Display the output video
+if os.path.exists(output_video_path):
+    h264_path = output_video_path.replace(".mp4", "_h264.mp4")
+    st.video(h264_path)
+    # Add button to delete temp files
+    if st.button("Borrar archivos temporales / Delete temporary files"):
+        if os.path.exists(temp_video_path):
+            os.remove(temp_video_path)
+        if os.path.exists(output_video_path):
+            os.remove(output_video_path)
+        if os.path.exists(h264_path):
+            os.remove(h264_path)
+            st.success("Archivos temporales borrados / Temporary files deleted.")
+        else:
+            st.warning("No se encontraron archivos temporales para borrar.")
+else:
+    if uploaded_file is not None:
         st.error(texts["error_processing"][lang])
 

@@ -2,6 +2,26 @@
 import time
 import argparse
 
+from moviepy.editor import VideoFileClip
+
+def transcode_to_h264_web(mp4_in: str, mp4_out: str, fps: int = None):
+    """
+    Creates a browser-compatible MP4: H.264 (yuv420p) + faststart.
+    Your OpenCV output has no audio, so we disable audio (-an equivalent).
+    """
+    clip = VideoFileClip(mp4_in, audio=False)
+    clip.write_videofile(
+        mp4_out,
+        codec="libx264",
+        audio=False,
+        fps=fps or clip.fps or 30,
+        preset="veryfast",
+        ffmpeg_params=["-movflags", "faststart", "-pix_fmt", "yuv420p"],
+        threads=0,  # auto
+        logger=None,
+    )
+    clip.close()
+
 def detect_and_highlight(input_video_path, output_video_path):
 
     import cv2
@@ -261,6 +281,11 @@ def detect_and_highlight(input_video_path, output_video_path):
 
     cap.release()
     out.release()
+    
+    h264_path = output_video_path.replace(".mp4", "_h264.mp4")
+    transcode_to_h264_web(output_video_path, h264_path, fps=frames_per_second)
+    print(f"Transcoded for web playback: {h264_path}")
+
 
     highlight_duration = frames_written / frames_per_second
     compression_ratio = (highlight_duration / (current_frame / frames_per_second)) * 100

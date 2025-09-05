@@ -1,5 +1,6 @@
 opencv-python-headless==4.8.1.78
-moviepy
 numpy
 ultralytics
 streamlit==1.31.1
+imageio-ffmpeg>=0.4.9
+moviepy>=1.0.3
